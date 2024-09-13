@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{%load static%}
+{%block title%} register {%endblock%}
+
+{%block content%}
+
+
+<div class="sub-header align-center">
+    <div class="subheader-holder" style="background:url({% static 'extra-images/cover_1.jpg'%}) no-repeat; background-size: cover; padding-top: 60px; padding-bottom: 30px; margin-top: 0px; margin-bottom: 0px; min-height: 186px !important;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="text-holder">
+                        <div class="page-title ">
+                            <h1 style="color:#ffffff !important;">Register</h1>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="breadcrumbs align-left">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <ul>
+                        <li><a href="{% url 'food:home' %}">Home</a></li>
+                        <li class="active">Register</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Main Section Start -->
+<div class="main-section">
+<div class="page-section nopadding cs-nomargin" style="margin-top: 0px; padding-top: 60px; padding-bottom: 30px; margin-bottom: 0px;">
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="signup-form login-form">
+                <div class="tab-content">
+                    <div id="signup_box" class="">
+                        <div class="scetion-title">
+                            <h2>Register your restaurant</h2>
+                        </div>
+                        <div class="section-title">
+                            {% if messages %}
+                            {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} show-notification" role="alert">
+                                    {{ message }}
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+        
+
+                        </div>
+                        <div class="scetion-title">
+                            {% for field in form %}
+
+                            {% if field.errors %}
+
+                           <div class="alert alert-danger" >
+                               {% for error in field.errors %}
+                                   {{ error }}
+                               {% endfor %}
+                           </div>
+
+                            {% endif %}
+
+                            {% endfor %}
+
+
+                            <div class="alert alert-danger ">
+                            
+                                    {{ form.non_field_errors }}
+                        
+                            </div>
+                        </div>
+                        <div class="input-info">
+                            <div class="row">
+                                <form enctype="multipart/form-data" class="wp-user-form webkit" method="post" action="{% url 'food:register_seller' %}">
+
+                                    {% csrf_token %}
+                                   
+                                    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                                        <label for="user_pass" class="control-label">Username</label>
+                                        <div class="field-holder">
+                                           {{user_form.username}}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                                        <label for="user_pass" class="control-label">Password</label>
+                                        <div class="field-holder">
+                                            
+                                            {{user_form.password}}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                                        <label for="user_pass" class="control-label">Confirm Password</label>
+                                        <div class="field-holder">
+                                            
+                                            {{user_form.cpassword}}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                                        <label for="user_first_name" class="control-label">First name</label>
+                                        <div class="field-holder">
+                                            
+                                           {{user_form.first_name}}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                                        <label for="user_last_name" class="control-label">Last name</label>
+                                        <div class="field-holder">
+                                  
+                                            {{user_form.last_name}}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                                        <label for="user_email" class="control-label">E-Mail</label>
+                                        <div class="field-holder">
+                                           {{user_form.email}}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                                        <label for="user_phone" class="control-label">Phone</label>
+                                        <div class="field-holder">
+                                           {{user_form.phone}}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                                        <label for="user_first_name" class="control-label">Restaurant Name</label>
+                                        <div class="field-holder">
+                                            
+                                           {{seller_form.seller_name}}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                                        <label for="user_last_name" class="control-label">Restaurant License Number</label>
+                                        <div class="field-holder">
+                                  
+                                            {{seller_form.seller_license}}
+                                        </div>
+                                    </div>
+                                  
+                                   
+
+                                
+                                    <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                                        <div class="shortcode-ajax-signup-button input-button-loader">
+                                            <br/>
+                                            <button type="submit" class="cs-bgcolor user-submit acc-submit">
+                                                Create Account</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                                        <div class="login-section">
+                                            <i class="icon-user-add"></i> Already have an account?
+                                            <a href="{% url 'accounts:login' %}"  class="login-link-page">Login here</a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+
+{%endblock%}

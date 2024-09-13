@@ -6,7 +6,7 @@ from django.dispatch import receiver
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, first_name,last_name,email,username,phone,password=None):
+    def create_user(self, first_name,last_name,email,username,phone,password=None, **kwargs):
      if not email:
          raise ValueError('Email is required')
      if not username:
@@ -26,7 +26,7 @@ class UserManager(BaseUserManager):
      return user
  
  
-    def create_superuser(self, first_name,last_name,email,username,phone, password=None):
+    def create_superuser(self, first_name,last_name,email,username,phone,password=None, **kwargs):
         user=self.create_user(
             email=self.normalize_email(email),
             username=username,
@@ -66,7 +66,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser=models.BooleanField(default=False)
     
     USERNAME_FIELD='email'
-    REQUIRED_FIELDS=['username','first_name','last_name','phone','role']
+    REQUIRED_FIELDS=['username','first_name','last_name','phone']
     objects=UserManager()
     
     def __str__(self):
@@ -99,4 +99,6 @@ class UserProfile(models.Model):
     
     
 
-    
+
+     
+     

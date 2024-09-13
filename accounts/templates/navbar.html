@@ -8,7 +8,7 @@
                     <div class="logo">
                         <figure>
                             <a href="{% url 'food:home' %}" class="light-logo">
-                                <img width="60%" heigth="200" src="{% static 'assets/logo/foodOnlineLogo.png' %}" alt="FoodBakery">
+                                <img width="80%" heigth="200" src="{% static 'assets/logo/foodOnlineLogo.png' %}" alt="FoodBakery">
                             </a>
                         </figure>
                     </div>
@@ -68,7 +68,7 @@
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                     <div class="login-option">
-                        <a class="cs-color cs-popup-joinus-btn login-popup"  href="{% url 'accounts:register' %}">Login / Register</a><a class="get-start-btn" href="#">
+                        <a class="cs-color cs-popup-joinus-btn login-popup"  href="{% url 'accounts:register' %}">Login / Register</a><a class="get-start-btn" href="{% url 'food:register_seller' %}">
                             Register
                             Restaurant </a>
                     </div>
