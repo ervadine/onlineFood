@@ -3,10 +3,11 @@ from accounts.forms import RegisterForm
 from .forms import SellerForm
 from accounts.models import User, UserProfile
 from django.contrib import messages
+
 # Create your views here.
 
 def home(request):
-     return render(request, 'index.html')
+     return render(request, 'food/index.html')
 
 
 def register_seller(request):
@@ -14,7 +15,11 @@ def register_seller(request):
      user_form=RegisterForm(request.POST)
      seller_form=SellerForm(request.POST, request.FILES)
      
-     if request.method=='POST' :
+     if request.user.is_authenticated:
+        messages.add_message(request,messages.WARNING,'you are already logged in')
+        return redirect('accounts:dashboard')
+     
+     elif request.method=='POST' :
           if user_form.is_valid() and seller_form.is_valid():
              first_name=user_form.cleaned_data['first_name']
              last_name=user_form.cleaned_data['last_name']
@@ -49,4 +54,4 @@ def register_seller(request):
        user_form=RegisterForm()
        seller_form=SellerForm()
      context={"seller_form":seller_form,"user_form":user_form}
-     return render(request, 'register_seller.html', context)
+     return render(request, 'food/register_seller.html', context)

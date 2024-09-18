@@ -8,9 +8,10 @@
 }
 
 .show-notification{
-    position: fixed;
-    bottom: 100%;
-    right: 20px;
+    position:fixed;
+    bottom: 50%;
+    align-items:center;
+    flex: none;
     animation-name: show-toast;
     animation-duration: 10s;
     animation-timing-function: ease-in-out;

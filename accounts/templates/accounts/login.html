@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "accounts/base.html" %}
 {%load static%}
 {%block title%} login {%endblock%}
 
@@ -14,7 +14,7 @@
                         <div class="page-title ">
                             <h1 style="color:#ffffff !important;">Login</h1>
                         </div>
-                        <p style="color:#ffffff !important;">A great restaurant website</p>
+                        
                     </div>
                 </div>
             </div>
@@ -45,15 +45,67 @@
                         <div class="scetion-title">
                             <h2>Sign In</h2>
                         </div>
+                        <div class="section-title">
+                            {% if messages %}
+                            {% for message in messages %}
+                            {% if message.tags == 'success' %}
+                            
+                            <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                            
+                            <script>
+                                var m = "{{ message }}";
+                                Swal.fire({
+                                    position: "top-end",
+                                    icon: "success",
+                                    title: m,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                  });
+                              </script>
+                              
+                            {% elif message.tags == 'error' %}
+                        
+                            <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                            
+                            <script>
+                                var m = "{{ message }}";
+                                Swal.fire({
+                                    position: "top-end",
+                                    icon: "error",
+                                    title: m,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                  });
+                              </script>
+                              {% elif message.tags == 'warning' %}
+                              
+                              <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                              
+                              <script>
+                                var m = "{{ message }}";
+                                Swal.fire({
+                                    position: "top-end",
+                                    icon: "warning",
+                                    title: m,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                  });
+                              </script>
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
+              
+                        </div>
                         <div class="input-info">
                             <div class="row">
-                                <form class="wp-user-form webkit">
-                                    
+                                <form class="wp-user-form webkit" method="post" action="{% url 'accounts:login' %}">
+                                    {% csrf_token %}
+
                                     <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
                                         <label for="user_pass" class="control-label">Password</label>
                                         <div class="field-holder">
                                             
-                                            <input type="password" placeholder="***********">
+                                            <input type="password" name="password" placeholder="***********">
                                         </div>
                                     </div>
                                   
@@ -61,7 +113,7 @@
                                     <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
                                         <label for="user_email" class="control-label">E-Mail</label>
                                         <div class="field-holder">
-                                            <input type="email" placeholder="Email">
+                                            <input type="email" name="email" placeholder="Email">
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">

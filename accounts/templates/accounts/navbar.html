@@ -13,7 +13,7 @@
                         </figure>
                     </div>
                     <div class="main-nav">
-                            <nav id="site-navigation" class="main-navigation">
+                            {% comment %} <nav id="site-navigation" class="main-navigation">
                                 <ul>
                                     <li>
                                         <a href="#">Demos</a>
@@ -52,9 +52,10 @@
                                     </li>
                                 </ul>
                             </nav><!-- .main-navigation -->
-                        </div>
+                        {% endcomment %}
+                    </div>
                     
-                    <div class="main-location">
+                    {% comment %} <div class="main-location">
                         <ul>
                             <li class="location-has-children choose-location">
                                 <form action="#">
@@ -64,14 +65,25 @@
                                 
                             </li>
                         </ul>
-                        </div>
+                        </div> {% endcomment %}
+
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                    <div class="login-option">
+                    {%if user.is_authenticated%}
+
+                     <div class="login-option">
+                         <a class="cs-color cs-popup-joinus-btn login-popup" href="{% url 'accounts:logout' %}">Logout</a>
+                     </div>
+                     {% else %}
+                     <div class="login-option">
                         <a class="cs-color cs-popup-joinus-btn login-popup"  href="{% url 'accounts:register' %}">Login / Register</a><a class="get-start-btn" href="{% url 'food:register_seller' %}">
                             Register
                             Restaurant </a>
                     </div>
+                     {% endif %}
+
+                    
+
                 </div>
             </div>
         </div>
