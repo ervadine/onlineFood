@@ -1,4 +1,4 @@
-{% extends "food/base.html" %}
+{% extends "accounts/base.html" %}
 {% load static %}
 {% block title %} register {% endblock %}
 
@@ -80,7 +80,7 @@
                         </div>
                         <div class="input-info">
                             <div class="row">
-                                <form enctype="multipart/form-data" class="wp-user-form webkit" method="post" action="{% url 'food:register_seller' %}">
+                                <form enctype="multipart/form-data" class="wp-user-form webkit" method="post" action="{% url 'accounts:register_seller' %}">
 
                                     {% csrf_token %}
                                    

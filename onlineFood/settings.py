@@ -10,7 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+
 from pathlib import Path
+from dotenv import load_dotenv
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -147,3 +149,12 @@ MESSAGE_TAGS = {
 
 LOGIN_REDIRECT_URL = 'accounts:dashboard'
 LOGIN_URL='login'
+load_dotenv()
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST='smtp.gmail.com'
+EMAIL_PORT=587
+EMAIL_HOST_USER='vendorfoulon@gmail.com'
+EMAIL_HOST_PASSWORD='eqpxkrhiwmhrrzdj'
+EMAIL_USE_TLS=True
+DEFAULT_FROM_EMAIL='onlineFood Marketplace <vendorfoulon@gmail.com>'
+

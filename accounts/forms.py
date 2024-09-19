@@ -1,6 +1,6 @@
 from typing import Any
 from django import forms
-from .models import User, UserProfile
+from .models import User, UserProfile,Seller
 
 
 class RegisterForm(forms.ModelForm):
@@ -25,3 +25,11 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model=UserProfile
         fields=('profile_picture','cover_photo','address_line_1','address_line_2','city','country','state','pin_code','longitude','latitude')
+
+
+class SellerForm(forms.ModelForm):
+
+   
+    class Meta:
+        model=Seller
+        fields=('seller_name','seller_license')

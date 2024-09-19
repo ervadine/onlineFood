@@ -1,0 +1,14 @@
+
+
+
+{%autoescape off%}
+
+               Please click the link below to confirm your account
+                http://{{domain}}{% url 'accounts:activate' uidb64=uid token=token%}
+                
+               
+          
+
+    {%endautoescape%}
+
+

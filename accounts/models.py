@@ -53,13 +53,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     phone=models.CharField(max_length=15,blank=True)
     username=models.CharField(max_length=50,unique=True)
     role=models.PositiveSmallIntegerField(choices=ROLE_CHOICE,blank=True,null=True)
-    
+  
     
     date_joined=models.DateTimeField(auto_now_add=True)
     last_login=models.DateTimeField(auto_now_add=True)
     created_date=models.DateTimeField(auto_now_add=True)
     modified_date=models.DateTimeField(auto_now=True)
     
+    is_verified=models.BooleanField(default=False)
     is_admin=models.BooleanField(default=False)
     is_staff=models.BooleanField(default=False)
     is_active=models.BooleanField(default=False)
@@ -108,4 +109,14 @@ class UserProfile(models.Model):
 
 
      
-     
+class Seller(models.Model):
+    user=models.OneToOneField(User, related_name="user",on_delete=models.CASCADE)
+    user_profile=models.OneToOneField(UserProfile,related_name="userprofile", on_delete=models.CASCADE)
+    seller_name=models.CharField(max_length=50)
+    seller_license=models.ImageField(upload_to="seller/license/")
+    is_approved=models.BooleanField(default=False)
+    created_at=models.DateTimeField(auto_now_add=True)
+    modified_date=models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return self.seller_name

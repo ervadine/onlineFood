@@ -1,54 +1,64 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from .forms import RegisterForm
-from .models import User
+from .forms import RegisterForm, SellerForm
+from .models import User, UserProfile
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import logout as auth_logout, login as auth_login, authenticate
-from .utils import detectUser
-from django.core.exceptions import PermissionDenied
+from .utils import check_role_user, role_admin,role_customer,role_vendor, send_verification_email,send_password_reset_email
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth.tokens import default_token_generator
 
-#restrict user from accessing the other pages
 
 
-def check_role_user(req):
-    page_url=''
-    if req.is_authenticated:
-        if req.role == 2:
-            page_url='accounts:customer'
-            return page_url
-        elif req.role == 1:
-            page_url='accounts:restaurant'
-            return page_url
-        elif req.role == None and req.is_superuser:
-            page_url='accounts:admin'
-            return page_url
-        else:
-            page_url='accounts:login'
-            return page_url
-    else:
-        page_url='accounts:login'
-        return page_url
+#seller registration
 
-def role_vendor(user):
-    
-    if user.role==1:
-        return True
-    else:
-        raise PermissionDenied
-        
-        
-def role_customer(user):
-    if user.role==2:
-        return True
-    else:
-           raise PermissionDenied
-        
-def role_admin(user):
-    if user.is_superuser:
-        return True
-    else:
-           raise PermissionDenied
+def register_seller(request):
+     
+     user_form=RegisterForm(request.POST)
+     seller_form=SellerForm(request.POST, request.FILES)
+     
+     if request.user.is_authenticated:
+        messages.add_message(request,messages.WARNING,'you are already logged in')
+        return redirect('accounts:myAccount')
+     
+     elif request.method=='POST' :
+          if user_form.is_valid() and seller_form.is_valid():
+             first_name=user_form.cleaned_data['first_name']
+             last_name=user_form.cleaned_data['last_name']
+             email=user_form.cleaned_data['email']
+             username=user_form.cleaned_data['username']
+             phone=user_form.cleaned_data['phone']
+             password=user_form.cleaned_data['password']
+             
+             user=User.objects.create_user(username=username,email=email,password=password,first_name=first_name,last_name=last_name,phone=phone)
+             user.set_password(password)
+             user.role=User.RESTAURANT
+             user.save()
+             send_verification_email(request,user)
+             seller=seller_form.save(commit=False)
+             
+             if 'seller_license' in request.FILES:
+                   seller.seller_license=request.FILES['seller_license']
+                   seller.user=user
+                   user_profile=UserProfile.objects.get(user=user)
+                   seller.user_profile=user_profile
+                   seller.save()
+                   
+                   messages.success(request,"your request has been saved successfully. Wait for approval",fail_silently=True)
+                   redirect("accounts:login")
+             else:
+                  messages.error(request, "Please upload a valid seller license.",fail_silently=True)
+                  return redirect("accounts:register_seller")
+             
+         
+         
+     else:
+       user_form=RegisterForm()
+       seller_form=SellerForm()
+     context={"seller_form":seller_form,"user_form":user_form}
+     return render(request, 'accounts/register_seller.html', context)
+
 
 # Create your views here.
 def register(request):
@@ -80,6 +90,7 @@ def register(request):
             user.set_password(password)  # set password securely
             user.role=User.CUSTOMER  # set user role as customer
             user.save()  # save user to database
+            send_verification_email(request,user)
             success_message = f" {first_name} 's account was created successfully"
             messages.success(request,success_message, fail_silently=True)
             return redirect('accounts:success')  # Redirect to a success page.
@@ -166,6 +177,70 @@ def customer(request):
 def admin(request):
     return render(request, 'accounts/dashboard.html')
 
+def activate(request,uidb64,token):
+    try:
+        uid=urlsafe_base64_decode(uidb64).decode('utf8')
+        user=User.objects.get(pk=uid)
+        
+        if user.is_active:
+            messages.warning(request,"Your account is already active.")
+            return redirect('accounts:login')
+        
+        if user.is_verified:
+            messages.warning(request,"Your account is already verified.")
+            return redirect('accounts:login')
+        
+        if user is not None and default_token_generator.check_token(user,token):
+            user.is_verified=True
+            user.is_admin=True
+            user.is_staff=True
+            user.is_active=True  # set user as active after verification
+            user.save()
+            messages.success(request,"Your account has been successfully verified.")
+            return redirect('accounts:login')
+        
+    except (TypeError, ValueError, OverflowError,User.DoesNotExist):
+        user = None
+        messages.warning(request,"Verification failed.")
+        return redirect('accounts:login')
+
+def success(request):
+    return render(request,'accounts/success.html')
+
+
+def forgot_password(request):
+    if request.method=='POST':
+        email=request.POST.get('email')
+        user=User.objects.filter(email=email).first()
+        if user:
+            send_password_reset_email(request,user)
+            messages.success(request,"We have sent a password reset link to your email.")
+            return redirect('accounts:myAccount')
+        else:
+            messages.error(request,"No account found with this email.")
+            return redirect('accounts:forgot_password')
+    return render(request,'accounts/forgot_password.html')
+
+def new_password(request,uidb64,token):
+    if request.method=='POST':
+        
+        new_password=request.POST.get('password')
+        try:
+            uid=urlsafe_base64_decode(uidb64).decode('utf8')
+            user=User.objects.get(pk=uid)
+            
+            if user is not None and default_token_generator.check_token(user,token):
+                user.set_password(new_password)
+                user.save()
+                messages.success(request,"Your password has been changed successfully.")
+                return redirect('accounts:myAccount')
+            
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+            messages.error(request,"Password reset failed.")
+            return redirect('accounts:forgot_password')
+    
+    return render(request,'accounts/new_password.html')
 
 
 
